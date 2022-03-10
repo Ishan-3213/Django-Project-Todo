@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-#gh&y5_$$!iiw&=0_x-+5x8l44k=cci-t($g(wbcf5ut@0!02o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'todo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'tudu', 
+            'NAME': 'Database-Name', 
             'USER': 'postgres', 
             'PASSWORD': 'somthing..adsasmpk',
             'HOST': '127.0.0.1', 
@@ -164,7 +164,7 @@ CELERY_TIMEZONE = 'Asia/Kolkata'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ishan.pansuirya@gmail.com'
-EMAIL_HOST_PASSWORD = 'ishan1811oo'
+EMAIL_HOST_USER = 'Your Email'
+EMAIL_HOST_PASSWORD = 'Email-Psswrd'
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
