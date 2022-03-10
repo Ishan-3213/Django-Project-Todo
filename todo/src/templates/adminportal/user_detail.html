@@ -1,0 +1,106 @@
+{% extends 'adminportal/base.html' %} {% load static %} {% block head %}
+<title>Admin</title>
+
+
+
+{% endblock %} {% block body_block %}
+<!-- Page Content -->
+
+
+
+<div class="container ">
+
+    <!-- Portfolio Item Heading -->
+    <h3 class="my-4 "> <small>User,  </small> {{ object.username }}
+    </h3>
+
+    <!-- Portfolio Item Row -->
+
+    <div class="row ">
+
+        <div class="col-md-5 ">
+            <img class="img-fluid " src="{{ object.profile_pic.url }} " alt="attachments here if any..!! " style="height: 100%; ">
+        </div>
+
+        <div class="col-md-7 ">
+            <!-- <h3 class="my-3 ">User Description</h3>
+            <p>
+                {{object.discription}}
+            </p> -->
+            <h3 class="my-3 " style="text-decoration: underline; ">User Details</h3>
+            <l>
+                <h4>
+                    <li>Email: {{object.email}}</li>
+                    <li>Designation: {{ object.designation }}</li>
+                    <li>Experties: {{object.experties}}</li>
+                    <li>Joined Date: {{object.created_at}} </li>
+                    {% if user.designation == "Admin " or user.username == object.username %}
+                    <li>Edit/Delete:
+                        <a href="{% url 'tudu:user_update' object.id %} " type="button " class="btn btn-warning " style="padding: 6px; ">
+                            <span class="mdi mdi-grease-pencil "></span>
+                        </a>
+                        <a href="{% url 'tudu:user_delete' object.id %} " style="padding: 5px; "> </a>
+                        <a type="button " class="btn btn-danger " style="padding: 6px; ">
+                            <span class="mdi mdi-delete-empty "></span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </h4>
+                </ul>
+        </div>
+
+    </div>
+
+    <!-- Related Projects Row -->
+
+    <div class="row ">
+        <div class="col-md-5 ">
+            <h3 class="my-4 " style="text-decoration: underline; ">Assigned Projects</h3>
+            <ul>
+                {% for project in project_user %}
+                <h4>
+                    <a href="{{project.get_absolute_url}} " style="text-decoration: none; color: black; ">
+                        <li>{{ project.title }}</li>
+                    </a>
+                </h4>
+                {% endfor %}
+
+            </ul>
+        </div>
+        {% if not object.designation == "Developer " %} {% endif %}
+
+        <div class="col-md-5 ">
+            <h3 class="my-4 " style="text-decoration: underline; ">Assigned Issues - Project</h3>
+
+            {% for issue in issue_user %}
+            <ul>
+                <h4>
+                    <li>
+                        <a href="{{issue.get_absolute_url}} " style="text-decoration: none; color: black; ">
+                            {{ issue.title }}
+                        </a>:
+                        <a href="{% url 'tudu:project_detail' issue.project_name.slug %} " style="text-decoration: none; color: black; ">
+                            {{ issue.project_name }}
+                        </a>
+                    </li>
+                </h4>
+
+
+            </ul>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+
+<!-- /.container -->
+{% endblock %} {% block scripts %}
+
+
+<script>
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    })
+</script>
+{% endblock %}

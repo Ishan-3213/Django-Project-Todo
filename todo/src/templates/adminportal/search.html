@@ -1,0 +1,52 @@
+{% extends 'adminportal/base.html' %} {% load static %} {% block head %}
+<title>Admin</title>
+{% endblock %} {% block body_block %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="welcome-text-black fw-bold" style="text-align: center;">
+                            Result Page
+                        </h3>
+                        <!-- <h4 style="text-align: center;">
+                            <input class="card-title" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="project"> Project
+
+                            <input class="card-title" type="radio" class="form-check-input" name="optionsRadios" id="optionsRadios1" value="issues"> Issues
+                        </h4> -->
+                        <div class="row">
+                            <div class="list-manage">
+                                <ul>
+                                    {% if search %}
+                                    <h3 style="text-align: left; padding-bottom: 20px; text-decoration: underline;">Results: {{search|length}} </h3> {% for item in search %}
+                                    <li>
+                                        <h4>
+                                            {% if item.title %}
+                                            <a href="{{ item.get_absolute_url }}" style="text-decoration: none; color: blue; ">
+                                                {{item.title}} 
+                                            </a>: {{item.discription|truncatewords:8}}
+                                            <a href="{{ item.project_name.get_absolute_url }}" style="text-decoration: none; color: black; ">
+                                                {{item.project_name}} 
+                                            </a> {% endif %}{{item.headline|safe}}{% if item.username %}
+                                            <a href="{% url 'tudu:user_detail' item.id %}" style="text-decoration: none; color: blue; ">
+                                                {{item.username}}
+                                            </a> - {{item.email}} {% endif %}
+                                        </h4>
+                                    </li>
+
+                                    {% endfor %} {% else %}
+                                    <h4 style="text-align: center; padding-top: 20px;"> Sorry,...Search does not exist..!!</h4>
+                                    {% endif %}
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %} {% block scripts %} {% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'adminportal/base.html' %} {% load static %} {% block head %}
+<title>Admin</title>
+{% endblock %} {% block nav_head %}
+
+<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+    <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+        <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+                <span class="icon-menu"></span>
+            </button>
+        </div>
+        <div>
+            <a class="navbar-brand brand-logo" href="{% url 'tudu:index' %}">
+                <img src="{% static 'adminportal/images/logo.svg' %}" alt="tudu-logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="index.html">
+                <img src="{% static 'adminportal/images/logo-mini.svg' %}" alt="logo" />
+            </a>
+        </div>
+    </div>
+    <div class="navbar-menu-wrapper d-flex align-items-top" style="padding-top: 50px;">
+        <ul class="navbar-nav">
+            <li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+                <h1 class="welcome-text">Project, <span class="text-black fw-bold"> <a href="{% url 'tudu:project_detail' slug=object.project_name.slug %}" style="text-decoration: none; color: black;"> {{ object.project_name }} </a> </span>
+                </h1>
+                <h3 class="welcome-sub-text"> {{ object.project_name.discription|truncatechars:200 }} </h3>
+            </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <h3 class="welcome-sub-text">{{user.username}}, {{ user.designation }} </h3>
+            </li>
+            <li class="nav-item dropdown d-none d-lg-block user-dropdown">
+                <a class="nav-link" id="UserDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="img-xs rounded-circle" src="{{ user.profile_pic.url }}" alt="Profile image">
+                </a>
+            </li>
+
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+        </button>
+    </div>
+</nav>
+{% endblock %} {% block body_block %}
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Portfolio Item Heading -->
+    <h3 class="my-4"> <small style="text-decoration: underline;">Issue Title</small>: {{ object.title|truncatechars:40 }}
+    </h3>
+
+    <!-- Portfolio Item Row -->
+    <div class="row">
+
+        <div class="col-md-5">
+            <img class="img-fluid" {% if object.attachments %} src="{{ object.attachments.url }}" {% else %} src="{{ object.attachments }}" {% endif %} alt="attachments here if any..!!" style="height: 100%;">
+        </div>
+        <div class="col-md-5">
+            <h3 class="my-3" style="text-decoration: underline;">Issue Description</h3>
+            <h4>
+                {{object.discription}}
+            </h4>
+
+            <h3 style="padding: 20px;"></h3>
+
+            <h3 class="my-3" style="text-decoration: underline;">Issue Details</h3>
+            <ul>
+                <h4>
+                    {% if object.difficulty == "High" %}
+                    <li>
+                        Difficulty: {{object.difficulty}}
+                        <label class="text-danger badge badge-danger"><i class="text-danger ti-arrow-up"></i></label>
+                    </li>
+                    {% elif object.difficulty == "Medium" %}
+                    <li>
+                        Difficulty: {{object.difficulty}}
+                        <label class="text-info badge badge-info"><i class="text-info ti-arrows-horizontal"></i></label>
+                    </li>
+                    {% elif object.difficulty == "Low" %}
+                    <li>
+                        Difficulty: {{object.difficulty}}
+                        <label class="text-success badge badge-success"><i class="text-success ti-arrow-down"></i></label>
+                    </li>
+                    {% endif %} {% if object.priority == "High" %}
+                    <li>
+                        Priority: {{object.priority}}
+                        <label class="text-danger badge badge-danger"><i class="text-danger ti-arrow-up"></i> </label>
+                    </li>
+                    {% elif object.priority == "Medium" %}
+                    <li>
+                        Priority: {{object.priority}}
+                        <label class="text-info badge badge-info"><i class="text-info ti-arrows-horizontal"></i></label>
+                    </li>
+                    {% elif object.priority == "Low" %}
+                    <li>
+                        Priority: {{object.priority}}
+                        <label class="text-success badge badge-success"> <i class="text-success ti-arrow-down"></i></label>
+                    </li>
+                    {% endif %}
+                    <li>Assign-To:
+                        <a href="{% url 'tudu:user_detail' object.assign_to.id %} " style="text-decoration: none; color: black; ">
+                                {{ object.assign_to }}
+                        </a>, {{ object.assign_to.designation }}
+                        <i class="text-success ti-user"></i>
+                    </li>
+                    <li>Issue-Type: {{object.issue_type}}</li>
+                    <li>Start-End Date: {{object.start_date}} - {{object.end_date}}</li>
+                    <li>
+                        Status: {% if object.status == "NotStarted" %} {{ object.status }}
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar " style="background-color: #0d19fd; "></div>
+                        </div>
+                        {% elif object.status == "Pending" %} {{ object.status }}
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 51%;background-color: #fd0d0d;"></div>
+                        </div>
+                        {% elif object.status == "Completed" %} {{ object.status }}
+                        <div class="progress ">
+                            <div class="progress-bar" role="progressbar " style="width: 100%; background-color: #0dfd0d; "></div>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% if request.user.designation == "Admin" or not object.status == "Completed" %}
+                    <li>Edit/Delete:
+                        <a href="{% url 'tudu:issue_update' slug=object.slug  %}" type="button " class="btn btn-warning " style="padding: 6px; ">
+                            <span class="mdi mdi-grease-pencil "></span>
+                        </a>
+                        <a href="{% url 'tudu:issue_delete' slug=object.slug  %}" type="button " class="btn btn-danger " style="padding: 6px; ">
+                            <span class="mdi mdi-delete-empty "></span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </h4>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+<!-- /.container -->
+{% endblock %} {% block scripts %} {% endblock %}

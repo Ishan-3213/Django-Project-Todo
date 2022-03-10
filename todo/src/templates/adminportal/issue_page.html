@@ -1,0 +1,175 @@
+{% extends 'adminportal/base.html' %} {% load static %} {% block head %}
+<title>Admin</title>
+<style>
+    table {
+        table-layout: fixed;
+    }
+</style>
+{% endblock %} {% block body_block %}
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="mb-4" style="text-align: center; text-decoration: underline;">
+                            Issue Page
+                        </h3>
+                        <!-- <h4 style=" text-align: center; ">
+                            <input class="card-title " type="radio " class="form-check-input " name="optionsRadios " id="optionsRadios1 " value="project "> Project
+
+                            <input class="card-title " type="radio " class="form-check-input " name="optionsRadios " id="optionsRadios1 " value="issues "> Issues
+                        </h4> -->
+
+                        <div class="row">
+
+                            <div class="row">
+                                <table style="margin-left: 50px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Issues</th>
+                                            <th>Projects</th>
+                                            <th>Created-For</th>
+                                            <th>
+                                                Created
+                                                <!-- <span onclick="Ordering('up')"> <i class="mdi mdi-arrow-up"></i></span>
+                                                    <span onclick="Ordering('down')"><i class="mdi mdi-arrow-down"></i></span> -->
+                                            </th>
+                                            <th>Status</th>
+                                            <th>Edit/Delete</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <form class="sortable" hx-post="{% url 'tudu:sort' %}" hx-trigger="end" hx-target="#issue-table">
+
+                                {% for item in issues %}
+                                <div class="row">
+                                    <input type='hidden' name='issue' value='{{ item.id }}' />
+                                    <div>
+                                        <table class=" {% if item.status == 'NotStarted' %} table table-danger {% elif item.status == 'Pending' %} table table-warning {% elif item.status == 'Completed' %}table table-success {% endif %}">
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ item.get_absolute_url }} " style="text-decoration: none; color: black; ">
+                                                        <h6>
+                                                            {{ item.title|truncatechars:15 }}
+                                                        </h6>
+                                                    </a>
+                                                </td>
+
+                                                <td>
+                                                    <a href="{{ item.project_name.get_absolute_url }} " style="text-decoration: none; color: black; ">
+                                                        <h6>
+                                                            {{ item.project_name.title }}
+                                                        </h6>
+                                                    </a>
+                                                </td>
+
+                                                <td>
+                                                    <a href="{% url 'tudu:user_detail' item.assign_to.id %} " style="text-decoration: none; color: black; ">
+                                                        <h6>
+                                                            {{ item.assign_to }}
+                                                        </h6>
+                                                    </a>
+                                                    {{ item.assign_to.designation }}
+                                                </td>
+
+                                                <td>{{item.created_at}}</td>
+
+                                                <td>
+                                                    {% if item.status == "NotStarted" %} <label class="badge badge-danger ">{{item.status}}</label>
+                                                    <p>
+                                                    </p>
+                                                    <div class="progress ">
+                                                        <div class="progress-bar " role="progressbar " style="background-color: #0d19fd; "></div>
+                                                    </div>
+                                                    {% elif item.status == "Pending" %} <label class="badge badge-warning ">{{item.status}}</label>
+                                                    <p>
+                                                    </p>
+                                                    <div class="progress ">
+                                                        <div class="progress-bar " role="progressbar " style="width: 51%; background-color: orange; "></div>
+                                                    </div>
+                                                    {% elif item.status == "Completed" %} <label class="badge badge-success ">{{item.status}}</label>
+                                                    <p>
+                                                    </p>
+                                                    <div class="progress ">
+                                                        <div class="progress-bar " role="progressbar " style="width: 100%; background-color: #0dfd0d; "></div>
+                                                    </div>
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {% if request.user.username == item.assign_to or request.user.designation == "Admin" or not item.status == "Completed" %}
+
+                                                    <a href="{% url 'tudu:issue_update' slug=item.slug  %}" type="button " class="btn btn-warning " style="padding: 6px; ">
+                                                        <span class="mdi mdi-grease-pencil "></span>
+                                                    </a>
+                                                    <a href="{% url 'tudu:issue_delete' slug=item.slug  %}" type="button " class="btn btn-danger " style="padding: 6px; ">
+                                                        <span class="mdi mdi-delete-empty "></span>
+                                                    </a>
+                                                    {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </form>
+
+                            <div style="display: none;">
+                                <p>
+                                    <p>
+
+                                    </p>
+                                </p>
+                            </div>
+                            <div style="display: none;" id="issue-table">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block scripts %}
+
+<script>
+    function Ordering(action) {
+        console.log(action)
+        $.ajax({
+            method = "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+            },
+            url: "tudu:issue_list",
+            data: {
+                'action': action
+            },
+        })
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+</script>
+
+{% endblock %}

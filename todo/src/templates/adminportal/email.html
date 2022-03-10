@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+    <h1>You have been served..!! {{ person.username }}</h1>
+    <h3>
+        <!------------------------- This is For Issue Mail----------------------- -->
+        <div>
+            {{issue.project_name}}
+        </div>
+        <div>
+            {{issue.title}}
+        </div>
+        <div>
+            {{issue.priority}}
+        </div>
+        <div>
+            {{issue.status}}
+        </div>
+        <div>
+            {{issue.assign_to.username}}
+        </div>
+        <div>
+            {{issue.difficulty}}
+        </div>
+        <div>
+            {{issue.start_date}} / {{issue.end_date}}
+        </div>
+        <div>
+            {% if issue.attachments %} {{issue.attachments.url}} {% else %} No attachments have been uploaded yet.. {% endif %}
+        </div>
+
+        <!-------------------------- This is For the Project Mail----------------------- -->
+        <div class="settings-heading">
+            {{ project.title }}
+        </div>
+        <div class="discription">
+            {{ project.discription }}
+        </div>
+        <div class="status">
+            {{ project.status }}
+        </div>
+    </h3>
+</body>
+
+</html>
